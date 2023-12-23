@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 fn compute_single_map(
     src: u64,
     dst_range_start: u64,
@@ -44,6 +42,17 @@ fn compute_all_reverse_maps(dst: u64, maps: &[Vec<u64>]) -> u64 {
     dst
 }
 
+fn is_in_seeds(seed: u64, seeds_raw: &[u64]) -> bool {
+    for c in seeds_raw.chunks(2) {
+        let start = c[0];
+        let length = c[1];
+        if (start..start + length).contains(&seed) {
+            return true;
+        }
+    }
+    false
+}
+
 fn part1(input: &str) -> u64 {
     let sections: Vec<&str> = input.split("\n\n").collect();
     let mut seeds: Vec<u64> = sections[0].split(": ").collect::<Vec<&str>>()[1]
@@ -71,10 +80,6 @@ fn part2(input: &str) -> u64 {
         .split(' ')
         .map(|x| x.parse().unwrap())
         .collect();
-    let seeds: HashSet<u64> = seeds_raw
-        .chunks(2)
-        .flat_map(|c| (c[0]..c[0] + c[1]).collect::<Vec<u64>>())
-        .collect();
     let mut all_maps = Vec::new();
     for section in sections.get(1..).unwrap().iter().rev() {
         let mut maps_raw: Vec<&str> = section.split('\n').filter(|s| !s.is_empty()).collect();
@@ -91,7 +96,7 @@ fn part2(input: &str) -> u64 {
         for maps in all_maps.iter() {
             x = compute_all_reverse_maps(x, maps);
         }
-        if seeds.contains(&x) {
+        if is_in_seeds(x, &seeds_raw) {
             break;
         } else {
             curr += 1;
@@ -101,7 +106,7 @@ fn part2(input: &str) -> u64 {
 }
 
 fn main() {
-    let input = include_str!("input/5.txt");
+    let input = include_str!("input/test.txt");
     println!("{}", part1(input));
     println!("{}", part2(input));
 }
