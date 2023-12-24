@@ -106,7 +106,7 @@ fn part2(input: &str) -> u64 {
 }
 
 fn main() {
-    let input = include_str!("input/test.txt");
+    let input = include_str!("input/5.txt");
     println!("{}", part1(input));
     println!("{}", part2(input));
 }
